@@ -15,6 +15,7 @@ import javax.persistence.*;
 @Builder
 @Table(name = "logo")
 public class Logo {
+    /*chaque societe peut avoir un Logo*/
     @Id
     @Column(name = "logId")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
