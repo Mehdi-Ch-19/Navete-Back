@@ -27,7 +27,7 @@ public class Logo {
     @Column(name = "logoType")
     private String type;
 
-    @Column(name = "logo", unique = false,  length = 100000)
+    @Column(name = "logo",  length = 1000000)
     private byte[] image;
 
     @OneToOne

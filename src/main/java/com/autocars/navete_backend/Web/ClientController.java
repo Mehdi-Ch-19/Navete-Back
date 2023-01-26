@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -40,13 +41,14 @@ public class ClientController {
     }
 
     @PostMapping
-    public ResponseEntity<Long> addClient(@RequestBody ClientCreationDto clientCreationDto){
+    public ResponseEntity<Long> signup(@RequestBody ClientCreationDto clientCreationDto){
         Long id =   clientService.addClient(clientCreationDto);
         return new ResponseEntity<>(id, HttpStatus.OK);
     }/*
     @GetMapping
     public ResponseEntity<>
 */
+
     @PostMapping("/login")
     public ResponseEntity<Object> AuthClient(@RequestBody Map<String ,Object> userMap){
         Map<String,Object> responce = new HashMap<>();
@@ -98,5 +100,11 @@ public class ClientController {
             result.put("message",message);
             return new ResponseEntity<>(result,HttpStatus.CONFLICT);
         }
+    }
+    /*get all the subscribe offres id */
+    @GetMapping("{clientid}/offre")
+    public ResponseEntity<List<Long>> abonneeoffreid(@PathVariable Long clientid){
+        List<Long> offresid = clientService.toutlesoffreabonne(clientid);
+        return new ResponseEntity<>(offresid,HttpStatus.OK);
     }
 }

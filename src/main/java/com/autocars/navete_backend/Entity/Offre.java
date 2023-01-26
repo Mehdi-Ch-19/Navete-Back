@@ -71,6 +71,7 @@ public class Offre {
     private Collection<Client> client  = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "societe_id")
     @JsonIgnore
     private Societe societe;
 

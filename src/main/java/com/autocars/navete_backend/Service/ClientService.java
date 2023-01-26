@@ -14,6 +14,10 @@ import org.apache.catalina.connector.ClientAbortException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 @Service
 @AllArgsConstructor
 @Slf4j
@@ -63,6 +67,10 @@ public class ClientService {
 
         }
         return result;
+    }
+    public List<Long> toutlesoffreabonne(Long clientid){
+        Optional<Client> client = this.clientRepository.findById(clientid);
+        return client.get().getOffreList().stream().map(Offre::getId).collect(Collectors.toList());
     }
 
 

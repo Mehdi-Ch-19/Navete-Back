@@ -14,5 +14,12 @@ public class SocieteCreationMapper {
                 .logo(societCreationDto.getLogo())
                 .build();
     }
+    public SocietCreationDto convertSociteToDto(Societe societe){
+        return SocietCreationDto.builder()
+                .nom(societe.getNom())
+                .email(societe.getEmail())
+                .logo(societe.getLogo())
+                .build();
+    }
 
 }

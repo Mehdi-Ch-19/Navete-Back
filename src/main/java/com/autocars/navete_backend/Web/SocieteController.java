@@ -6,13 +6,16 @@ import com.autocars.navete_backend.Entity.Societe;
 import com.autocars.navete_backend.Service.AutoCarService;
 import com.autocars.navete_backend.Service.OffreService;
 import com.autocars.navete_backend.Service.SocieteService;
+import com.autocars.navete_backend.Utility.Dto.ClientCreationDto;
 import com.autocars.navete_backend.Utility.Dto.SocietCreationDto;
 import com.autocars.navete_backend.Utility.Exeption.AutoCarNotFoundExeption;
 import com.autocars.navete_backend.Utility.Exeption.ClientNotFoundExeption;
+import com.autocars.navete_backend.Utility.Exeption.OffreNotFoundExeption;
 import com.autocars.navete_backend.Utility.Exeption.SocieteNoFoundExeption;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -45,30 +48,22 @@ public class SocieteController {
     * */
     @PostMapping()
     public ResponseEntity<Long> createSociete(@RequestParam("model") String societCreation,
-                                                @RequestParam(value = "image",required = false) MultipartFile logo) throws IOException {
-
+                                                @RequestParam(value = "image" , required = false) MultipartFile logo) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         SocietCreationDto societCreationDto = objectMapper.readValue(societCreation,SocietCreationDto.class);
         Long id =  service.createSociete(societCreationDto,logo);
         return new ResponseEntity<>(id, HttpStatus.OK);
     }
-    @PostMapping("/login")
-    public ResponseEntity<Object> AuthSociete(@RequestBody Map<String ,Object> societemap){
-        Map<String,Object> responce = new HashMap<>();
-        try {
-            String email = (String) societemap.get("email");
-            String password = (String) societemap.get("password");
-            Long id = service.validateSociete(email,password);
-            responce.put("id",id);
-            responce.put("success",true);
-            responce.put("message","Client is authenticated");
-            return new ResponseEntity<Object>(responce,HttpStatus.OK);
-        }catch (ClientNotFoundExeption clientNotFoundExeption){
-            log.error(clientNotFoundExeption.getMessage());
-            responce.put("success",false);
-            responce.put("message",clientNotFoundExeption.getMessage());
-            return new ResponseEntity<Object>(responce,HttpStatus.NOT_FOUND);
-        }
+
+    @DeleteMapping("{id}/Offre/{offreid}")
+    public ResponseEntity<Long> deleteoffre(@PathVariable Long id , @PathVariable Long offreid) throws OffreNotFoundExeption {
+        offreService.deleteoffre(offreid);
+        return new ResponseEntity<>(offreid,HttpStatus.OK);
+    }
+    @GetMapping("{id}/offre")
+    public ResponseEntity<List<Offre>> getalloffrebysociete(@PathVariable Long id){
+        List<Offre> offreList = service.getalloffres(id);
+        return new ResponseEntity<>(offreList,HttpStatus.OK);
     }
     @GetMapping("/{id}")
     public ResponseEntity<Object> getSociete(@PathVariable Long id){
@@ -136,6 +131,24 @@ public class SocieteController {
             return new ResponseEntity<>(offree,HttpStatus.OK);
         }catch (Exception e){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+    @PostMapping("/login")
+    public ResponseEntity<Object> login(@RequestBody Map<String ,Object> userMap){
+        Map<String,Object> responce = new HashMap<>();
+        try {
+            String email = (String) userMap.get("email");
+            String password = (String) userMap.get("password");
+            Long id = service.validateSociete(email,password);
+            responce.put("id",id);
+            responce.put("success",true);
+            responce.put("message","Societe is authenticated");
+            return new ResponseEntity<>(responce,HttpStatus.OK);
+        }catch (ClientNotFoundExeption clientNotFoundExeption){
+            log.error(clientNotFoundExeption.getMessage());
+            responce.put("success",false);
+            responce.put("message",clientNotFoundExeption.getMessage());
+            return new ResponseEntity<>(responce,HttpStatus.NOT_FOUND);
         }
     }
 
